@@ -11,7 +11,7 @@ void check_error(int num, char *file_name, char* op, char* for_what)
 {
 	if(num < 0)
 	{
-		printf("***ERROR***\nError: %s.\nFailed Syscall: %s\nFailed doing: %s\nObject failed: %s\n", strerror(errno), op, for_what, file_name);
+		fprintf(stderr, "***ERROR***\nError: %s.\nFailed Syscall: %s\nFailed doing: %s\nObject failed: %s\n", strerror(errno), op, for_what, file_name);
 		_exit(-1);
 	}
 }
@@ -22,7 +22,10 @@ int main(int argc, char **argv)
 	char buf[4096];
 	int outfile = 1;
 	if(argc==1)
-		puts("bleh");
+	{
+		fprintf(stderr, "Error: Not enough arguments provided\n");
+		return -1;
+	}
 	else
 	{
 		if(!strcmp(argv[1],"-o"))
@@ -34,7 +37,10 @@ int main(int argc, char **argv)
 				offset = 2;
 			}
 			else
-				puts("Not enough arguments");
+			{
+				fprintf(stderr, "Error: Not enough arguments provided\n");
+				return -1;
+			}
 		}
 		for(int i = 1 + offset; i < argc; i++)
 		{
@@ -52,7 +58,7 @@ int main(int argc, char **argv)
 			while(1)
 			{	
 				int cur_read = read(fd, buf, 4096);
-				check_error(cur_read, argv[i], "read", "Reading into a buffer");
+				check_error(cur_read, strcmp(argv[i], "-") ? argv[i] : "<standard input>", "read", "Reading into a buffer");
 				read_write_count++;
 				if(cur_read == 0)
 					break;
@@ -68,12 +74,15 @@ int main(int argc, char **argv)
 					}
 				}
 				// need to look for partial write p 14	
-				check_error(write(outfile, buf,  cur_read), argv[2], "write", "Writing to output");
+				check_error(write(outfile, buf,  cur_read), outfile == 1 ? "<standard out>" : argv[2], "write", "Writing to output");
 				read_write_count++;
 				size_of_file += cur_read;
 			}
 			if(!fd)
 				check_error(close(fd), argv[i], "close", "Closing input file");
+			else
+				fflush(stdin);
+
 			fprintf(stderr, "\n\nName of file: %s\nBytes transferred: %d\nNumber of read and writes: %d\n", strcmp(argv[i], "-") ? argv[i] : "<standard input>", size_of_file, read_write_count);
 			if(is_binary)
 				fprintf(stderr, "This is a binary file\n");
