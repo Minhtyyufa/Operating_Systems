@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 /cygdrive/c/Users/minht/CLionProjects/os/hw3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /cygdrive/c/Users/minht/CLionProjects/os/hw3/cmake-build-debug/CMakeFiles/edit_cache.dir
 /cygdrive/c/Users/minht/CLionProjects/os/hw3/cmake-build-debug/CMakeFiles/hw3.dir
+=======
+/afs/ee.cooper.edu/user/n/nguyen8/CLionProjects/hw3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/afs/ee.cooper.edu/user/n/nguyen8/CLionProjects/hw3/cmake-build-debug/CMakeFiles/untitled.dir
+/afs/ee.cooper.edu/user/n/nguyen8/CLionProjects/hw3/cmake-build-debug/CMakeFiles/edit_cache.dir
+>>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52

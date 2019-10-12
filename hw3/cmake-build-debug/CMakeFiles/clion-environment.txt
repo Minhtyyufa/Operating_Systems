@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ToolSet: 2.10.0@C:\cygwin64
 Options: 
+=======
+ToolSet: 1.0 (local)Options: 
+>>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
 
 Options:
