@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-<<<<<<< HEAD
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -45,23 +44,10 @@ int check_error(int num, char *fail_msg, char *what, int exit_stat)
 void io_redirect(int argc, char **argv)
 {
     for(int i = 0; i < argc; i++)
-=======
-
-
-void handle_argv(int argc, char **argv);
-
-int in_fd = 0;
-int out_fd = 1;
-int err_fd = 2;
-void handle_argv(int argc, char **argv)
-{
-    for(int i = 1; i < argc; i++)
->>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
     {
         if(argv[i][0] == '<') {
             char new_path[4096];
             sprintf(new_path, "./%s", argv[i] + 1);
-<<<<<<< HEAD
             int fd = check_error(open(new_path, O_RDONLY), "Error opening %s to redirect stdin", argv[i]+1, 1);
             check_error(dup2(fd, 0), "Error redirecting stdin to %s", argv[i]+1, 1);
             close(fd);
@@ -75,11 +61,11 @@ void handle_argv(int argc, char **argv)
             {
                 sprintf(new_path, "./%s", argv[i]+2);
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_APPEND, 0666),
-                        "Error opening %s to redirect stdout", argv[i] + 2, 1);
+                                 "Error opening %s to redirect stdout", argv[i] + 2, 1);
             } else {
                 sprintf(new_path, "./%s", argv[i] + 1);
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_TRUNC, 0666),
-                        "Error opening %s to redirect stdout", argv[i] + 1, 1);
+                                 "Error opening %s to redirect stdout", argv[i] + 1, 1);
             }
             check_error(dup2(fd, 1), "Error redirecting stdout to %s", argv[i]+1, 1);
             close(fd);
@@ -93,24 +79,20 @@ void handle_argv(int argc, char **argv)
             {
                 sprintf(new_path, "./%s", argv[i]+2);
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_APPEND, 0666),
-                        "Error opening %s to redirect stderr", argv[i] + 2, 1);
+                                 "Error opening %s to redirect stderr", argv[i] + 2, 1);
             } else
             {
                 sprintf(new_path, "./%s", argv[i]+1);
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_TRUNC, 0666),
-                        "Error opening %s to redirect stderr", argv[i] + 1, 1);
+                                 "Error opening %s to redirect stderr", argv[i] + 1, 1);
             }
             check_error(dup2(fd, 1), "Error redirecting stderr to %s", argv[i]+1, 1);
             close(fd);
-=======
-            fopen(new_path, "w");
->>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
         }
     }
 }
 
 
-<<<<<<< HEAD
 void execute_command()
 {
 
@@ -196,10 +178,3 @@ int main(int argc, char **argv) {
     }
     //io_redirect(argc, argv);
 }
-=======
-
-int main(int argc, char **argv) {
-    handle_argv(argc, argv);
-    return 0;
-}
->>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
