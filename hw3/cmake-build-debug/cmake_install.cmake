@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+# Install script for directory: /cygdrive/c/Users/minht/CLionProjects/os/hw3
+=======
 # Install script for directory: /afs/ee.cooper.edu/user/n/nguyen8/CLionProjects/hw3
+>>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -27,11 +31,14 @@ if(NOT CMAKE_INSTALL_COMPONENT)
   endif()
 endif()
 
+<<<<<<< HEAD
+=======
 # Install shared libraries without execute permission?
 if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "0")
 endif()
 
+>>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
 # Is this installation the result of a crosscompile?
 if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
@@ -45,5 +52,9 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
+<<<<<<< HEAD
+file(WRITE "/cygdrive/c/Users/minht/CLionProjects/os/hw3/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+=======
 file(WRITE "/afs/ee.cooper.edu/user/n/nguyen8/CLionProjects/hw3/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+>>>>>>> 6fdac1f53a1dbc1928b49d2b98a5612266e52b52
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

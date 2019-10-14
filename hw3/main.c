@@ -86,7 +86,7 @@ void io_redirect(int argc, char **argv)
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_TRUNC, 0666),
                                  "Error opening %s to redirect stderr", argv[i] + 1, 1);
             }
-            check_error(dup2(fd, 1), "Error redirecting stderr to %s", argv[i]+1, 1);
+            check_error(dup2(fd, 2), "Error redirecting stderr to %s", argv[i]+1, 1);
             close(fd);
         }
     }
@@ -196,12 +196,18 @@ int parser(FILE *std_in)
 }
 
 int main(int argc, char **argv) {
-    FILE *std_in;
-    std_in = fdopen(0, "r");
+
+    if(argc > 1)
+    {
+        int fd = check_error(open(argv[1],O_RDONLY),"Error opening script %s", "path", -1);
+        check_error(dup2(fd,0), "Error redirecting stdin to %s", argv[1], -1);
+        check_error(close(fd), "Error closing file descriptor for %s", argv[1], -1);
+    }
+    FILE *std_in = fdopen(0, "r");
 
     if(std_in == NULL)
     {
-        perror("Error opening stdin");
+        perror("Error opening stdin/input");
         return -1;
     }
     else
