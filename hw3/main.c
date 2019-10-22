@@ -10,10 +10,11 @@
 #include <sys/resource.h>
 #include <sys/wait.h>
 
+int script_fd = 0;
 
 int check_if_num(char* word);
 int check_error(int num, char *fail_msg, char *what, int exit_stat);
-void handle_argv(int argc, char **argv);
+void parser(FILE *std_in);
 
 int check_if_num(char* word)
 {
@@ -43,6 +44,14 @@ int check_error(int num, char *fail_msg, char *what, int exit_stat)
 
 void io_redirect(int argc, char **argv)
 {
+    //If there are more than 3 io arguments it uses the most recent one per fd, which I believe is what bash does.
+    //If we want to limit the # of io_args to 3, I wouldj uncomment this code.
+    /*
+    if(argc > 3) {
+        fprintf(stderr, "Error: Too many io args provided");
+        exit(1);
+    }
+     */
     for(int i = 0; i < argc; i++)
     {
         if(argv[i][0] == '<') {
@@ -89,17 +98,24 @@ void io_redirect(int argc, char **argv)
             check_error(dup2(fd, 2), "Error redirecting stderr to %s", argv[i]+1, 1);
             close(fd);
         }
+        else
+        {
+            fprintf(stderr, "Program Error: a non-io arg was passed to io-arg");
+            exit(1);
+        }
     }
 }
 
 
 int execute_command(char **argv, int argc, char **io_args, int io_argc)
 {
-    struct timeval start,end;
+    struct timeval start,end, real;
     gettimeofday(&start, NULL);
     int pid = check_error(fork(), "Error %s", "forking", 0);
     if(pid == 0)
     {
+        if(script_fd != 0)
+            close(script_fd);
         io_redirect(io_argc, io_args);
         execvp(argv[0], argv);
         perror("exec sys call failed");
@@ -119,8 +135,13 @@ int execute_command(char **argv, int argc, char **io_args, int io_argc)
             else
                 printf("Child process %d exited with a return value of %d\n", pid, WEXITSTATUS(proc_status));
         }
+        else if(WIFSTOPPED(proc_status))
+            printf("Child process %d was stopped by signal %d\n", pid, WSTOPSIG(proc_status));
+        else if(WIFCONTINUED(proc_status))
+            printf("Child process %d was continued\n", pid);
 
-        printf("Real: %ld.%03lds, ", end.tv_sec -start.tv_sec, (end.tv_usec - start.tv_usec)/1000);
+        timersub(&end, &start, &real);
+        printf("Real: %ld.%03lds, ", real.tv_sec, (real.tv_usec)/1000);
         printf("User: %ld.%03lds, ", proc_usage.ru_utime.tv_sec, proc_usage.ru_utime.tv_usec/1000);
         printf("Sys: %ld.%03lds\n", proc_usage.ru_stime.tv_sec, proc_usage.ru_stime.tv_usec/1000);
 
@@ -128,25 +149,28 @@ int execute_command(char **argv, int argc, char **io_args, int io_argc)
     }
 }
 
-int parser(FILE *std_in)
+void parser(FILE *std_in)
 {
     int last_returned = 0;
     char *line = NULL;
     size_t buf_len = 0;
+
     //newline character at the end of line;
     while((getline(&line, &buf_len, std_in)) != -1) {
         if (line[0] == '#')
             continue;
         char *word = strtok(line, " \n");
-        char args[buf_len][4096];
-        char io_args[3][4096];
+        char args[buf_len][buf_len];
+        char io_args[buf_len][buf_len];
         int arg_c = 0;
         int io_arg_c = 0;
         while (word != NULL) {
             if (word[0] == '>' || word[0] == '<' || (word[0] == '2' && word[1] == '>')) {
+
                 strcpy(io_args[io_arg_c], word);
                 io_arg_c++;
-            } else {
+            }
+            else {
                 strcpy(args[arg_c], word);
                 arg_c++;
             }
@@ -163,10 +187,12 @@ int parser(FILE *std_in)
                 if(chdir(getenv("HOME")) < 0)
                     perror("Error changing directories");
             }
-        } else if (!strcmp(args[0], "pwd")) {
+        }
+        else if (!strcmp(args[0], "pwd")) {
             char path[4096];
             printf("%s\n", getcwd(path, 4096));
-        } else if (!strcmp(args[0], "exit")) {
+        }
+        else if (!strcmp(args[0], "exit")) {
             if (arg_c > 1) {
                 if (!check_if_num(args[1])) {
                     exit(atoi(args[1]));
@@ -189,7 +215,6 @@ int parser(FILE *std_in)
                 new_io_args[i] = io_args[i];
             }
             new_io_args[io_arg_c] = NULL;
-
             last_returned = execute_command(new_args, arg_c, new_io_args, io_arg_c);
         }
     }
@@ -198,22 +223,20 @@ int parser(FILE *std_in)
 int main(int argc, char **argv) {
 
     if(argc > 1)
-    {
-        int fd = check_error(open(argv[1],O_RDONLY),"Error opening script %s", "path", -1);
-        check_error(dup2(fd,0), "Error redirecting stdin to %s", argv[1], -1);
-        check_error(close(fd), "Error closing file descriptor for %s", argv[1], -1);
-    }
-    FILE *std_in = fdopen(0, "r");
+        script_fd = check_error(open(argv[1],O_RDONLY),"Error opening script %s", "path", -1);
 
-    if(std_in == NULL)
+    FILE *in_file = fdopen(script_fd, "r");
+    if(in_file == NULL)
     {
-        perror("Error opening stdin/input");
+        if(script_fd == 0)
+            perror("Error opening stdin");
+        else
+            perror("Error opening script");
         return -1;
     }
     else
     {
-        parser(std_in);
+        parser(in_file);
         return 0;
     }
-    //io_redirect(argc, argv);
 }
