@@ -13,10 +13,6 @@ unistd.h
 -
 string.h
 -
-sys/types.h
--
-sys/stat.h
--
 fcntl.h
 -
 stdlib.h
@@ -28,5 +24,7 @@ sys/time.h
 sys/resource.h
 -
 sys/wait.h
+-
+limits.h
 -
 

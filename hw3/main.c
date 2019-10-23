@@ -144,7 +144,7 @@ int execute_command(char **argv, int argc, char **io_args, int io_argc)
         printf("User: %ld.%03lds, ", proc_usage.ru_utime.tv_sec, proc_usage.ru_utime.tv_usec/1000);
         printf("Sys: %ld.%03lds\n", proc_usage.ru_stime.tv_sec, proc_usage.ru_stime.tv_usec/1000);
 
-        return proc_status;
+        return WEXITSTATUS(proc_status) ? WEXITSTATUS(proc_status): proc_status;
     }
 }
 
