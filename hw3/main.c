@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
+#include <limits.h>
 
 int script_fd = 0;
 
@@ -53,7 +54,7 @@ void io_redirect(int argc, char **argv)
     for(int i = 0; i < argc; i++)
     {
         if(argv[i][0] == '<') {
-            char new_path[4096];
+            char new_path[PATH_MAX];
             sprintf(new_path, "./%s", argv[i] + 1);
             int fd = check_error(open(new_path, O_RDONLY), "Error opening %s to redirect stdin", argv[i]+1, 1);
             check_error(dup2(fd, 0), "Error redirecting stdin to %s", argv[i]+1, 1);
@@ -63,8 +64,8 @@ void io_redirect(int argc, char **argv)
         else if(argv[i][0] == '>')
         {
             int fd;
-            char new_path[4096];
-            if(argv[i][2] == '>')
+            char new_path[PATH_MAX];
+            if(argv[i][1] == '>')
             {
                 sprintf(new_path, "./%s", argv[i]+2);
                 fd = check_error(open(new_path, O_WRONLY | O_CREAT | O_APPEND, 0666),
@@ -81,7 +82,7 @@ void io_redirect(int argc, char **argv)
         else if(argv[i][0] == '2' && argv[i][1] == '>')
         {
             int fd;
-            char new_path[4096];
+            char new_path[PATH_MAX];
             if (argv[i][2] == '>')
             {
                 sprintf(new_path, "./%s", argv[i]+2);
@@ -147,16 +148,20 @@ int execute_command(char **argv, int argc, char **io_args, int io_argc)
     }
 }
 
-void parser(FILE *std_in)
+void parser(FILE *in_file)
 {
     int last_returned = 0;
     char *line = NULL;
     size_t buf_len = 0;
 
     //newline character at the end of line;
-    while((getline(&line, &buf_len, std_in)) != -1) {
+    while((getline(&line, &buf_len, in_file)) != -1) {
         if (line[0] == '#')
             continue;
+        if(buf_len > 4096) {
+            fprintf(stderr, "Error: Line too long, continuing to next line");
+            continue;
+        }
         char *word = strtok(line, " \n");
         char args[buf_len][buf_len];
         char io_args[buf_len][buf_len];
@@ -187,8 +192,11 @@ void parser(FILE *std_in)
             }
         }
         else if (!strcmp(args[0], "pwd")) {
-            char path[4096];
-            printf("%s\n", getcwd(path, 4096));
+            char path[PATH_MAX];
+            if(getcwd(path, PATH_MAX) == NULL)
+                perror("Error with getcwd, moving on to next command");
+            else
+                printf("%s\n", path);
         }
         else if (!strcmp(args[0], "exit")) {
             if (arg_c > 1) {
@@ -198,7 +206,6 @@ void parser(FILE *std_in)
                     fprintf(stderr, "Valid exit code not provided, exiting with -1");
                     exit(-1);
                 }
-
             } else
                 exit(last_returned);
         } else {
