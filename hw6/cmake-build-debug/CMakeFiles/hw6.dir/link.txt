@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/hw6.dir/spin_lock.c.o CMakeFiles/hw6.dir/spin_test.c.o CMakeFiles/hw6.dir/slab.c.o CMakeFiles/hw6.dir/dll.c.o  -o hw6.exe -Wl,--out-implib,libhw6.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.c
+spin_lock.h
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
+tas.h
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/tas.h
+
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
+
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_test.c
+stdio.h
+-
+unistd.h
+-
+sys/mman.h
+-
+spin_lock.h
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
+sys/types.h
+-
+sys/wait.h
+-
+
+/cygdrive/c/Users/minht/CLionProjects/os/hw6/tas.h
+
