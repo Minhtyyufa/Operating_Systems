@@ -6,27 +6,29 @@
 
 #IncludeRegexTransform: 
 
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.c
-spin_lock.h
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
-tas.h
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/tas.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/dll.h
+slab.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/slab.h
 
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/slab.h
+dll.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/dll.h
 
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_test.c
-stdio.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/slab_test.c
+dll.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/dll.h
+slab.h
+/afs/ee.cooper.edu/user/n/nguyen8/os/hw6/slab.h
+time.h
 -
 unistd.h
 -
 sys/mman.h
 -
-spin_lock.h
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/spin_lock.h
-sys/types.h
+stdlib.h
 -
 sys/wait.h
 -
-
-/cygdrive/c/Users/minht/CLionProjects/os/hw6/tas.h
+stdio.h
+-
 

@@ -1,16 +1,12 @@
 #include <stddef.h>
-#include "slab.h"
+
+#include "both.h"
 #include "dll.h"
+#include "slab.h"
 #include "spin_lock.h"
-#define NSLOTS 20
 
 
-struct slab{
-    volatile int lock;
-    int last_pos;
-    char freemap[NSLOTS];
-    struct dll slots[NSLOTS];
-};
+
 
 void *slab_alloc(struct slab *slab)
 {

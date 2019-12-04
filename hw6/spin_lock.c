@@ -5,12 +5,12 @@
 #include "spin_lock.h"
 #include "tas.h"
 
-void spin_unlock(int volatile *lock)
+void spin_unlock(volatile int *lock)
 {
     *lock =0;
 }
-void spin_lock(int volatile *lock)
+void spin_lock(volatile int *lock)
 {
-    while(TAS(lock) !=0);
+    while(tas(lock) !=0);
     *lock=1;
 }
